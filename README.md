@@ -142,7 +142,6 @@ Parámetros principales editables:
 - `context.txt`: contexto original del proyecto.
 - `comparaciones.txt`: checklist de comparación paper vs implementación.
 - `document.md`: documentación viva de decisiones y cambios.
-- `roadmap_fidelidad_ngres.md`: roadmap de fidelidad y prioridades.
 
 ## Recomendación De Uso
 
