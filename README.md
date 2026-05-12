@@ -46,11 +46,12 @@ Pasos:
 
 ## Qué Controla El Main Central
 
+Se recomienda ejecutar como ya está configurado para obtener los resultados presentados.
 Flags principales:
 
 - `run_routing_only`: ejecuta solo routing SP vs MO.
-- `run_sp_vs_mo`: ejecuta la réplica NG-RES principal.
-- `run_mo_vs_aco`: activa la extensión MO+ACO.
+- `run_sp_vs_mo`: ejecuta la réplica NG-RES principal (NO TERMINADA).
+- `run_mo_vs_aco`: activa la extensión MO+ACO (NO TERMINADA).
 - `run_schedulability`: calcula schedulability ratio.
 - `run_plots`: genera gráficos.
 - `use_topology_dataset`: usa dataset fijo de topologías.
