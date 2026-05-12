@@ -1,0 +1,15 @@
+Tamaño de red, num topologias
+Matriz aleatoria, densidad, grafo no dirigido, conectividad forzada
+Seleccion gateway, grado del gateway
+Uso del dataset
+Seleccion de sensores
+Inicializacion de SP, pesos inciiales, dinamica de pesos, elemento penalizado
+Funcion de pesos y de densidad, factor de densidad
+Num iteraciones, parada temprana, mejor solucion
+Numero de flujos, ruta del sensor, costo, parametro, periodos, ambiguedad [4,7)
+Hiperperiodo H, Deadline
+N, m, lambda, kmax, w, lambda/66
+Overlaps, hops totales, contencion, conflictos, unidades, suministro, condicion EDF, sched. ratio
+Cómo se calcula cada uno
+Cómo se cuentan los overlaps?
+uso de dataset de topologías
