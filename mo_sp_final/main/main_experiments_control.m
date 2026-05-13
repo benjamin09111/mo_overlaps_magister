@@ -43,22 +43,23 @@ lambda_fixed_sched = 4;
 conflict_pair_mode = 'paper_double';
 
 % Comparaciones a ejecutar
-run_routing_only = false;
-run_sp_vs_mo = true;
-run_mo_vs_aco = false;
-run_schedulability = true;
-run_gateway_comparison = false;
-run_plots = true;
-run_gateway_plots = true;
-save_results = false;
+run_routing_only = false;      % Solo routing SP vs MO, sin demand ni schedulability.
+run_sp_vs_mo = true;           % Réplica principal NG-RES: SP vs MO.
+run_mo_vs_aco = false;         % Extensión MO+ACO. Dejar en false si no se quiere ACO.
+run_schedulability = true;     % Calcula schedulability ratio y resultados EDF.
+run_gateway_comparison = true; % Compara métodos de selección de gateway.
+run_plots = true;              % Activa generación de figuras.
+run_legacy_plots = true;       % Figuras clásicas: overlaps, hops, conflict, contention, sched.
+run_gateway_plots = true;      % Figuras nuevas de deviation para gateway.
+save_results = true;           % Guarda estructuras .mat con resultados.
 
 % Gateway comparison / deviation analysis
-gateway_methods = {'betweenness', 'degree', 'eigenvector', 'closeness'};
-baseline_gateway_method = 'degree';
-gw_m_fixed = 8;
+gateway_methods = {'betweenness', 'degree', 'eigenvector', 'closeness'}; % Centralidades a comparar.
+baseline_gateway_method = 'degree';  % Baseline de referencia para deviation.
+gw_m_fixed = 8;                      % Número de canales para el estudio de gateway.
 
 % Salida / trazabilidad
-show_summary = true;
+show_summary = true;          % Imprime un resumen inicial de la configuración activa.
 
 %% ==============================
 %  CONFIGURACION DERIVADA
@@ -110,6 +111,7 @@ if show_summary
     fprintf('run_schedulability = %d\n', run_schedulability);
     fprintf('run_gateway_comparison = %d\n', run_gateway_comparison);
     fprintf('run_plots = %d\n', run_plots);
+    fprintf('run_legacy_plots = %d\n', run_legacy_plots);
     fprintf('gateway_methods = [%s]\n', strjoin(gateway_methods, ', '));
     fprintf('baseline_gateway_method = %s\n', baseline_gateway_method);
     fprintf('=========================================\n');
@@ -120,9 +122,23 @@ end
 %% ==============================
 
 dataset_path = fullfile(project_root, 'dataset_topologies.dat');
-if cfg.use_topology_dataset && (regenerate_dataset || ~isfile(dataset_path))
+needs_dataset_regen = regenerate_dataset || ~isfile(dataset_path);
+if cfg.use_topology_dataset && ~needs_dataset_regen
+    try
+        loaded_dataset = load(dataset_path, '-mat');
+        if ~isfield(loaded_dataset, 'K') || ~isfield(loaded_dataset, 'N') || ~isfield(loaded_dataset, 'lambdas') || ...
+                loaded_dataset.K ~= cfg.num_tests || loaded_dataset.N ~= cfg.N || ~isequal(loaded_dataset.lambdas, cfg.lambdas)
+            needs_dataset_regen = true;
+        end
+    catch
+        needs_dataset_regen = true;
+    end
+end
+
+if cfg.use_topology_dataset && needs_dataset_regen
     fprintf('Generando dataset de topologias...\n');
     generate_topology_dataset(cfg);
+    clear get_topology_from_dataset;
 end
 
 %% ==============================
@@ -159,7 +175,7 @@ end
 %  PLOTS
 %% ==============================
 
-if run_plots
+if run_plots && run_legacy_plots
     if run_sp_vs_mo && ~isempty(fieldnames(results))
         plot_overlaps_results(results, cfg);
         plot_hops_results(results, cfg);

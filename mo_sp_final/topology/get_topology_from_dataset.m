@@ -15,6 +15,16 @@ if isempty(loaded_data)
     end
 end
 
+if isfield(cfg, 'num_tests')
+    if ~isfield(loaded_data, 'K') || loaded_data.K ~= cfg.num_tests || ~isfield(loaded_data, 'N') || loaded_data.N ~= cfg.N
+        loaded_data = load(dataset_path, '-mat');
+    end
+end
+
+if trial_idx < 1 || trial_idx > loaded_data.K
+    error('trial_idx=%d fuera de rango. El dataset tiene K=%d topologias por lambda. Regenera el dataset si cambias num_tests.', trial_idx, loaded_data.K);
+end
+
 lambda_idx = find(loaded_data.lambdas == lambda, 1);
 if isempty(lambda_idx)
     error('Lambda %d no encontrado en el dataset.', lambda);

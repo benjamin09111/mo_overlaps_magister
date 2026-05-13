@@ -14,7 +14,7 @@ for l_idx = 1:length(gw_results.lambdas)
     y = squeeze(gw_results.dev_degree_mo_vs_sp.sched(1, l_idx, :));
     plot(ax1, x, y, '-s', ...
         'Color', colors{l_idx}, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 end
 
 ax1.XLim = [min(x), max(x)];
@@ -30,7 +30,7 @@ for l_idx = 1:length(gw_results.lambdas)
     y = squeeze(gw_results.dev_best_mo_vs_baseline.sched(1, l_idx, :));
     plot(ax2, x, y, '-s', ...
         'Color', colors{l_idx}, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 end
 
 ax2.XLim = [min(x), max(x)];
@@ -58,8 +58,6 @@ ax.YGrid = 'on';
 ax.GridLineStyle = '--';
 ax.GridAlpha = 0.6;
 ax.GridColor = [0.82 0.82 0.82];
-ax.XTickDirection = 'in';
-ax.YTickDirection = 'in';
 ax.TickLength = [0.02 0.02];
 ax.Box = 'off';
 end

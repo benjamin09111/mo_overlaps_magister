@@ -15,12 +15,12 @@ for l_idx = 1:length(results.lambdas)
     plot(ax, results.n_range, results.mean_hops_mo(l_idx, :), ...
         'linestyle', '--', 'marker', 'o', ...
         'Color', c, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 
     plot(ax, results.n_range, results.mean_hops_moaco(l_idx, :), ...
         'linestyle', '-', 'marker', 's', ...
         'Color', c, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 end
 
 ax.XLabel.String = 'Number of flows, $n$';
@@ -37,14 +37,9 @@ ax.GridLineStyle = '--';
 ax.GridAlpha = 0.6;
 ax.GridColor = '#D0D0D0';
 
-ax.XTickDirection = 'in';
-ax.YTickDirection = 'in';
 ax.TickLength = [0.03 0.03];
 
 ax.Box = 'off';
-ax.TopAxis.LineWidth = [];
-ax.LeftAxis.LineWidth = 0.8;
-ax.LeftAxis.Color = 'black';
 
 legend_labels = {};
 for l_idx = 1:length(results.lambdas)
@@ -61,13 +56,10 @@ h_legend = legend(ax, legend_labels, ...
     'Box', 'on', ...
     'EdgeColor', '#BBBBBB', ...
     'LineWidth', 0.8);
-h_legend.Layout.PixelMargins = [4 4];
-h_legend.ItemTokenSize = [18 8];
 
 set(ax, 'FontName', 'Times New Roman', 'FontSize', 10);
 
 fig.Position = [100, 100, 650, 400];
-fig.Children.WindowStyle = 'normal';
 
 drawnow;
 end

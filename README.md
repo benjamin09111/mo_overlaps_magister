@@ -50,8 +50,10 @@ Se recomienda ejecutar como ya está configurado para obtener los resultados pre
 Flags principales:
 
 - `run_routing_only`: ejecuta solo routing SP vs MO.
-- `run_sp_vs_mo`: ejecuta la réplica NG-RES principal (NO TERMINADA).
-- `run_mo_vs_aco`: activa la extensión MO+ACO (NO TERMINADA).
+- `run_sp_vs_mo`: ejecuta la réplica NG-RES principal.
+- `run_mo_vs_aco`: activa la extensión MO+ACO.
+- `run_gateway_comparison`: activa el estudio de centralidades de gateway.
+- `run_gateway_plots`: genera los gráficos de desviación del estudio de gateway.
 - `run_schedulability`: calcula schedulability ratio.
 - `run_plots`: genera gráficos.
 - `use_topology_dataset`: usa dataset fijo de topologías.
@@ -71,6 +73,39 @@ Parámetros principales editables:
 - `w`
 - `H`
 - `eta_min`, `eta_max`
+- `gateway_methods`
+- `baseline_gateway_method`
+- `gw_m_fixed`
+
+### Estudio De Gateway
+
+Este bloque compara métodos de selección de gateway como:
+
+- `betweenness`
+- `degree`
+- `eigenvector`
+- `closeness`
+
+Qué hace:
+
+- compara cada centralidad contra `degree` como baseline de referencia
+- evalúa `SP` y `MO` con la misma topología, sensores y periodos por trial
+- calcula desviaciones relativas sobre overlaps, conflict y schedulability
+- identifica la mejor centralidad para `MO` según la media de schedulability
+
+Gráficos generados:
+
+- `gateway_centrality_deviation`
+- `gateway_mo_improvement`
+
+Cómo probarlo:
+
+1. En `mo_sp_final/main/main_experiments_control.m`, poner:
+   - `run_gateway_comparison = true`
+   - `run_gateway_plots = true`
+2. Ejecutar `main_experiments_control.m`.
+3. Revisar la carpeta `mo_sp_final/figures/`.
+4. Si quieres comparar menos métodos, editar `gateway_methods` arriba en el main.
 
 ## Carpetas Importantes
 

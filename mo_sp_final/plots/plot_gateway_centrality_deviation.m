@@ -31,10 +31,10 @@ for l_idx = 1:num_lambdas
 
         plot(ax, x, y_sp, '--o', ...
             'Color', c, 'LineWidth', 1.5, ...
-            'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+            'MarkerFaceColor', 'white', 'MarkerSize', 4);
         plot(ax, x, y_mo, '-s', ...
             'Color', c, 'LineWidth', 1.8, ...
-            'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+            'MarkerFaceColor', 'white', 'MarkerSize', 4);
     end
 
     ax.XLim = [min(x), max(x)];
@@ -73,9 +73,7 @@ ax.YGrid = 'on';
 ax.GridLineStyle = '--';
 ax.GridAlpha = 0.6;
 ax.GridColor = [0.82 0.82 0.82];
-ax.XTickDirection = 'in';
-ax.YTickDirection = 'in';
-ax.TickLength = [0.02 0.02];
+    ax.TickLength = [0.02 0.02];
 ax.Box = 'off';
 end
 

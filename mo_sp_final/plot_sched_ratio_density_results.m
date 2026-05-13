@@ -17,12 +17,12 @@ for l_idx = 1:length(sched.lambdas)
     plot(ax, sched.n_range, sched.ratio_density_sp(l_idx, :), ...
         'linestyle', '--', 'marker', 'o', ...
         'Color', c, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 
     plot(ax, sched.n_range, sched.ratio_density_mo(l_idx, :), ...
         'linestyle', '-', 'marker', 's', ...
         'Color', c, 'LineWidth', 1.8, ...
-        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
+        'MarkerFaceColor', 'white', 'MarkerSize', 4);
 end
 
 ax.XLabel.String = 'Number of flows, n';
@@ -36,8 +36,6 @@ ax.GridLineStyle = '--';
 ax.GridAlpha = 0.6;
 ax.GridColor = [0.82 0.82 0.82];
 
-ax.XTickDirection = 'in';
-ax.YTickDirection = 'in';
 ax.TickLength = [0.02 0.02];
 ax.Box = 'off';
 
