@@ -47,8 +47,15 @@ run_routing_only = false;
 run_sp_vs_mo = true;
 run_mo_vs_aco = false;
 run_schedulability = true;
+run_gateway_comparison = false;
 run_plots = true;
+run_gateway_plots = true;
 save_results = false;
+
+% Gateway comparison / deviation analysis
+gateway_methods = {'betweenness', 'degree', 'eigenvector', 'closeness'};
+baseline_gateway_method = 'degree';
+gw_m_fixed = 8;
 
 % Salida / trazabilidad
 show_summary = true;
@@ -76,6 +83,9 @@ cfg.m_contention_values = m_contention_values;
 cfg.m_sched_values = m_sched_values;
 cfg.lambda_fixed_for_contention = lambda_fixed_for_contention;
 cfg.lambda_fixed_sched = lambda_fixed_sched;
+cfg.gateway_methods = gateway_methods;
+cfg.baseline_gateway_method = baseline_gateway_method;
+cfg.gw_m_fixed = gw_m_fixed;
 
 %% ==============================
 %  RESUMEN INICIAL
@@ -98,7 +108,10 @@ if show_summary
     fprintf('run_sp_vs_mo = %d\n', run_sp_vs_mo);
     fprintf('run_mo_vs_aco = %d\n', run_mo_vs_aco);
     fprintf('run_schedulability = %d\n', run_schedulability);
+    fprintf('run_gateway_comparison = %d\n', run_gateway_comparison);
     fprintf('run_plots = %d\n', run_plots);
+    fprintf('gateway_methods = [%s]\n', strjoin(gateway_methods, ', '));
+    fprintf('baseline_gateway_method = %s\n', baseline_gateway_method);
     fprintf('=========================================\n');
 end
 
@@ -120,6 +133,7 @@ results = struct();
 sched = struct();
 results_routing = struct();
 results_moaco = struct();
+gw_results = struct();
 
 if run_routing_only
     results_routing = run_experiment_suite_routing(cfg);
@@ -135,6 +149,10 @@ end
 
 if run_mo_vs_aco
     results_moaco = run_experiment_suite_mo_vs_moaco(cfg);
+end
+
+if run_gateway_comparison
+    gw_results = run_experiment_suite_gateway_comparison(cfg);
 end
 
 %% ==============================
@@ -158,6 +176,11 @@ if run_plots
         plot_overlaps_results_mo_vs_moaco(results_moaco, cfg);
         plot_hops_results_mo_vs_moaco(results_moaco, cfg);
     end
+
+    if run_gateway_comparison && run_gateway_plots && ~isempty(fieldnames(gw_results))
+        plot_gateway_centrality_deviation(gw_results, cfg);
+        plot_gateway_mo_improvement(gw_results, cfg);
+    end
 end
 
 %% ==============================
@@ -166,7 +189,7 @@ end
 
 if save_results
     out_path = fullfile(project_root, 'results_control.mat');
-    save(out_path, 'cfg', 'results', 'sched', 'results_routing', 'results_moaco');
+    save(out_path, 'cfg', 'results', 'sched', 'results_routing', 'results_moaco', 'gw_results');
     fprintf('Resultados guardados en %s\n', out_path);
 end
 

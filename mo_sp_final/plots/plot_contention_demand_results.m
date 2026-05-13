@@ -1,29 +1,73 @@
 function plot_contention_demand_results(results, cfg)
-% Figura estilo NG-RES: Avg. worst-case contention demand
-% Variando m = {4,8,12}, con lambda = 4
+% Figura estilo paper: Avg. worst-case contention demand
 
-figure('Color', 'w', 'Position', [140, 140, 800, 600]);
-hold on; grid on;
+fig = figure('Color', 'w', 'Position', [100, 100, 650, 400]);
+ax = axes('Parent', fig);
+hold(ax, 'on'); grid(ax, 'on');
 
-num_m = length(results.m_values);
+m_colors = {'#1f77b4', '#ff7f0e', '#2ca02c'};
+method_styles.SP = struct('linestyle', '--', 'marker', 'o');
+method_styles.MO = struct('linestyle', '-', 'marker', 's');
 
-for m_idx = 1:num_m
-    c = cfg.colors{m_idx};
+for m_idx = 1:length(results.m_values)
+    c = m_colors{m_idx};
 
-    plot(results.n_range, results.mean_contention_sp(m_idx, :), ':', ...
-        'Color', c, 'LineWidth', 1.2);
+    plot(ax, results.n_range, results.mean_contention_sp(m_idx, :), ...
+        'linestyle', '--', 'marker', 'o', ...
+        'Color', c, 'LineWidth', 1.8, ...
+        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
 
-    plot(results.n_range, results.mean_contention_mo(m_idx, :), '-s', ...
-        'Color', c, 'LineWidth', 1.5, ...
-        'MarkerFaceColor', c, 'MarkerSize', 5);
+    plot(ax, results.n_range, results.mean_contention_mo(m_idx, :), ...
+        'linestyle', '-', 'marker', 's', ...
+        'Color', c, 'LineWidth', 1.8, ...
+        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
 end
 
-xlabel('Number of flows (n)');
-ylabel('Avg. worst-case contention demand');
-title(sprintf('N = %d, \\lambda = %d, m = {4,8,12}', results.N, 4));
+ax.XLabel.String = 'Number of flows, $n$';
+ax.YLabel.String = 'Average worst-case contention demand';
+ax.XLabel.Interpreter = 'latex';
+ax.YLabel.Interpreter = 'latex';
 
-legend('m=4 SP','m=4 MO', ...
-       'm=8 SP','m=8 MO', ...
-       'm=12 SP','m=12 MO', ...
-       'Location', 'NorthWest');
+ax.XLim = [min(results.n_range), max(results.n_range)];
+ax.YLim(1) = 0;
+
+ax.XGrid = 'on';
+ax.YGrid = 'on';
+ax.GridLineStyle = '--';
+ax.GridAlpha = 0.6;
+ax.GridColor = '#D0D0D0';
+
+ax.XTickDirection = 'in';
+ax.YTickDirection = 'in';
+ax.TickLength = [0.03 0.03];
+
+ax.Box = 'off';
+ax.TopAxis.LineWidth = [];
+ax.LeftAxis.LineWidth = 0.8;
+ax.LeftAxis.Color = 'black';
+
+legend_labels = {};
+for m_idx = 1:length(results.m_values)
+    m_val = results.m_values(m_idx);
+    legend_labels{end+1} = sprintf('$m=%d$ SP', m_val);
+    legend_labels{end+1} = sprintf('$m=%d$ MO', m_val);
+end
+
+h_legend = legend(ax, legend_labels, ...
+    'Location', 'NorthWest', ...
+    'FontSize', 8, ...
+    'FontName', 'Times New Roman', ...
+    'Interpreter', 'latex', ...
+    'Box', 'on', ...
+    'EdgeColor', '#BBBBBB', ...
+    'LineWidth', 0.8);
+h_legend.Layout.PixelMargins = [4 4];
+h_legend.ItemTokenSize = [18 8];
+
+set(ax, 'FontName', 'Times New Roman', 'FontSize', 10);
+
+fig.Position = [100, 100, 650, 400];
+fig.Children.WindowStyle = 'normal';
+
+drawnow;
 end

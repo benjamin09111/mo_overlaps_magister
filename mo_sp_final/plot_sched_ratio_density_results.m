@@ -1,27 +1,60 @@
 function plot_sched_ratio_density_results(sched, cfg)
-% Schedulability ratio varying density
+% Schedulability ratio varying density - estilo paper
 
-figure('Color', 'w', 'Position', [160, 160, 800, 600]);
-hold on; grid on;
+fig = figure('Color', 'w', 'Position', [100, 100, 650, 400]);
+ax = axes('Parent', fig);
+hold(ax, 'on'); grid(ax, 'on');
+
+lambda_colors = {
+    [0.1216 0.4667 0.7059], ...
+    [1.0000 0.4980 0.0549], ...
+    [0.1725 0.6275 0.1725]
+};
 
 for l_idx = 1:length(sched.lambdas)
-    c = cfg.colors{l_idx};
+    c = lambda_colors{l_idx};
 
-    plot(sched.n_range, sched.ratio_density_sp(l_idx, :), ':', ...
-        'Color', c, 'LineWidth', 1.4);
+    plot(ax, sched.n_range, sched.ratio_density_sp(l_idx, :), ...
+        'linestyle', '--', 'marker', 'o', ...
+        'Color', c, 'LineWidth', 1.8, ...
+        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
 
-    plot(sched.n_range, sched.ratio_density_mo(l_idx, :), '-s', ...
-        'Color', c, 'LineWidth', 1.6, ...
-        'MarkerFaceColor', c, 'MarkerSize', 5);
+    plot(ax, sched.n_range, sched.ratio_density_mo(l_idx, :), ...
+        'linestyle', '-', 'marker', 's', ...
+        'Color', c, 'LineWidth', 1.8, ...
+        'MarkerFaceColor', 'white', 'MarkerSize', 4, 'MarkerEdgeWidth', 0.8);
 end
 
-xlabel('Number of flows (n)');
-ylabel('Schedulability ratio');
-ylim([0 1.05]);
-title(sprintf('N = %d, m = %d, \\lambda = {4,8,12}', sched.N, sched.m_fixed));
+ax.XLabel.String = 'Number of flows, n';
+ax.YLabel.String = 'Schedulability ratio';
+ax.XLim = [min(sched.n_range), max(sched.n_range)];
+ax.YLim = [0 1.05];
 
-legend('\lambda=4 SP','\lambda=4 MO', ...
-       '\lambda=8 SP','\lambda=8 MO', ...
-       '\lambda=12 SP','\lambda=12 MO', ...
-       'Location', 'SouthWest');
+ax.XGrid = 'on';
+ax.YGrid = 'on';
+ax.GridLineStyle = '--';
+ax.GridAlpha = 0.6;
+ax.GridColor = [0.82 0.82 0.82];
+
+ax.XTickDirection = 'in';
+ax.YTickDirection = 'in';
+ax.TickLength = [0.02 0.02];
+ax.Box = 'off';
+
+legend_labels = {};
+for l_idx = 1:length(sched.lambdas)
+    lambda_val = sched.lambdas(l_idx);
+    legend_labels{end+1} = sprintf('\\lambda=%d SP', lambda_val); %#ok<AGROW>
+    legend_labels{end+1} = sprintf('\\lambda=%d MO', lambda_val); %#ok<AGROW>
+end
+
+legend(ax, legend_labels, ...
+    'Location', 'SouthWest', ...
+    'FontSize', 8, ...
+    'FontName', 'Times New Roman', ...
+    'Interpreter', 'tex', ...
+    'Box', 'on', ...
+    'EdgeColor', [0.73 0.73 0.73]);
+
+set(ax, 'FontName', 'Times New Roman', 'FontSize', 10);
 end

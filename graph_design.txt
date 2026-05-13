@@ -1,0 +1,362 @@
+# Instrucciones para el agente: actualizar visual de gráficos Python para paper informático profesional
+
+Modifica todo el código Python que genera gráficos para que las figuras tengan un estilo formal, limpio y publicable en un paper de informática. El objetivo es reemplazar gráficos oscuros o tipo “debug” por figuras con fondo blanco, proporciones similares a papers académicos, buena legibilidad y exportación en alta calidad.
+
+---
+
+# Estilo general obligatorio
+
+Todos los gráficos deben usar:
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+Configurar un estilo global para paper:
+
+mpl.rcParams.update({
+    "figure.facecolor": "white",
+    "axes.facecolor": "white",
+    "savefig.facecolor": "white",
+    "savefig.edgecolor": "white",
+
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "DejaVu Serif", "Computer Modern Roman"],
+
+    "font.size": 10,
+    "axes.labelsize": 10,
+    "axes.titlesize": 10,
+    "legend.fontsize": 8,
+    "xtick.labelsize": 9,
+    "ytick.labelsize": 9,
+
+    "axes.edgecolor": "black",
+    "axes.linewidth": 0.8,
+
+    "xtick.direction": "in",
+    "ytick.direction": "in",
+    "xtick.major.size": 3,
+    "ytick.major.size": 3,
+
+    "grid.color": "#D0D0D0",
+    "grid.linestyle": "--",
+    "grid.linewidth": 0.5,
+    "grid.alpha": 0.6,
+
+    "lines.linewidth": 1.8,
+    "lines.markersize": 4,
+
+    "legend.frameon": True,
+    "legend.framealpha": 1.0,
+    "legend.edgecolor": "#BBBBBB",
+
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
+})
+
+No usar fondo negro, no usar colores saturados tipo consola, no usar títulos grandes, no usar grillas muy fuertes y no usar leyendas que tapen datos importantes.
+
+Tamaño y proporción de las figuras
+
+Usar proporciones similares a una figura de paper.
+
+Figura de una columna
+figsize = (3.5, 2.4)
+Figura de dos columnas
+figsize = (7.0, 4.2)
+Figura comparativa recomendada
+figsize = (6.5, 4.0)
+
+Evitar gráficos demasiado altos o demasiado anchos. La relación ancho/alto recomendada debe estar entre 1.5 y 1.75.
+
+Ejemplo:
+
+fig, ax = plt.subplots(figsize=(6.5, 4.0))
+Colores recomendados
+
+Usar una paleta sobria y compatible con impresión.
+
+paper_colors = {
+    "blue": "#1f77b4",
+    "orange": "#ff7f0e",
+    "green": "#2ca02c",
+    "red": "#d62728",
+    "purple": "#9467bd",
+    "brown": "#8c564b",
+    "gray": "#7f7f7f",
+}
+
+Para comparar métodos, usar color + estilo de línea.
+
+Ejemplo:
+
+styles = {
+    "SP": {"linestyle": "--", "marker": "o"},
+    "MO": {"linestyle": "-", "marker": "s"},
+}
+
+No depender solo del color para diferenciar curvas.
+
+Reglas para curvas del experimento
+
+Para gráficos MOSPR / SP vs MO:
+
+Cada valor de λ debe tener un color distinto.
+Cada método debe tener un estilo de línea distinto.
+Recomendación
+λ = 4: azul
+λ = 8: naranjo
+λ = 12: verde
+SP: línea segmentada --
+MO: línea continua -
+
+Usar marcadores pequeños y discretos.
+
+Ejemplo:
+
+lambda_colors = {
+    4: "#1f77b4",
+    8: "#ff7f0e",
+    12: "#2ca02c",
+}
+
+method_styles = {
+    "SP": {"linestyle": "--", "marker": "o"},
+    "MO": {"linestyle": "-", "marker": "s"},
+}
+Ejes, etiquetas y títulos
+
+No usar títulos grandes dentro del gráfico.
+
+Eliminar:
+
+ax.set_title("N = 66, m = 8, λ = 4,8,12")
+
+La información experimental debe ir en:
+
+caption de LaTeX
+texto del paper
+anotación pequeña si realmente es necesaria
+Etiquetas correctas
+ax.set_xlabel("Number of flows, n")
+ax.set_ylabel("Average worst-case conflict demand")
+
+También se permite notación matemática:
+
+ax.set_xlabel(r"Number of flows, $n$")
+ax.set_ylabel(r"Average worst-case conflict demand")
+
+Evitar textos ambiguos o informales.
+
+Grilla y bordes
+
+Usar grilla suave:
+
+ax.grid(True, which="major", axis="both")
+
+La grilla debe ser clara y no dominante.
+
+Eliminar bordes superiores y derechos:
+
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+
+Mantener visibles:
+
+eje izquierdo
+eje inferior
+Leyenda
+
+La leyenda debe ser:
+
+pequeña
+clara
+sin tapar datos
+
+Ejemplo:
+
+ax.legend(
+    loc="upper left",
+    frameon=True,
+    ncol=1,
+    handlelength=2.5,
+    borderpad=0.4,
+)
+
+Si existen muchas curvas:
+
+ax.legend(
+    loc="center left",
+    bbox_to_anchor=(1.02, 0.5),
+    frameon=True
+)
+
+Guardar con:
+
+plt.savefig(path, bbox_inches="tight")
+Escala proporcional y límites
+
+Los ejes deben comenzar en cero cuando tenga sentido:
+
+ax.set_xlim(min(n_values), max(n_values))
+ax.set_ylim(bottom=0)
+
+No exagerar diferencias usando escalas artificiales.
+
+Si se usa escala logarítmica, debe indicarse explícitamente.
+
+Exportación obligatoria
+
+Guardar todas las figuras en:
+
+PDF (paper/publicación)
+PNG 300 dpi (presentaciones/revisión)
+
+Ejemplo:
+
+fig.savefig("figures/conflict_demand.pdf", bbox_inches="tight")
+fig.savefig("figures/conflict_demand.png", dpi=300, bbox_inches="tight")
+
+Preferir PDF o SVG sobre PNG para LaTeX.
+
+Función base recomendada
+def setup_paper_axes(ax, xlabel, ylabel):
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    ax.grid(True, which="major", axis="both")
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.tick_params(axis="both", which="major", direction="in")
+
+    return ax
+Plantilla de gráfico publicable
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from pathlib import Path
+
+mpl.rcParams.update({
+    "figure.facecolor": "white",
+    "axes.facecolor": "white",
+    "savefig.facecolor": "white",
+    "savefig.edgecolor": "white",
+    "font.family": "serif",
+    "font.serif": ["Times New Roman", "DejaVu Serif", "Computer Modern Roman"],
+    "font.size": 10,
+    "axes.labelsize": 10,
+    "axes.titlesize": 10,
+    "legend.fontsize": 8,
+    "xtick.labelsize": 9,
+    "ytick.labelsize": 9,
+    "axes.edgecolor": "black",
+    "axes.linewidth": 0.8,
+    "xtick.direction": "in",
+    "ytick.direction": "in",
+    "grid.color": "#D0D0D0",
+    "grid.linestyle": "--",
+    "grid.linewidth": 0.5,
+    "grid.alpha": 0.6,
+    "lines.linewidth": 1.8,
+    "lines.markersize": 4,
+    "legend.frameon": True,
+    "legend.framealpha": 1.0,
+    "legend.edgecolor": "#BBBBBB",
+    "pdf.fonttype": 42,
+    "ps.fonttype": 42,
+})
+
+lambda_colors = {
+    4: "#1f77b4",
+    8: "#ff7f0e",
+    12: "#2ca02c",
+}
+
+method_styles = {
+    "SP": {"linestyle": "--", "marker": "o"},
+    "MO": {"linestyle": "-", "marker": "s"},
+}
+
+def plot_conflict_demand(results, output_name):
+
+    fig, ax = plt.subplots(figsize=(6.5, 4.0))
+
+    for lambda_value, data in results.items():
+        color = lambda_colors[lambda_value]
+
+        for method in ["SP", "MO"]:
+            ax.plot(
+                data["n"],
+                data[method],
+                label=rf"$\lambda={lambda_value}$ {method}",
+                color=color,
+                linestyle=method_styles[method]["linestyle"],
+                marker=method_styles[method]["marker"],
+                markerfacecolor="white",
+                markeredgewidth=1.0,
+            )
+
+    ax.set_xlabel(r"Number of flows, $n$")
+    ax.set_ylabel("Average worst-case conflict demand")
+
+    ax.set_xlim(left=0)
+    ax.set_ylim(bottom=0)
+
+    ax.grid(True, which="major", axis="both")
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.legend(
+        loc="upper left",
+        frameon=True,
+        handlelength=2.5,
+        borderpad=0.4,
+    )
+
+    fig.tight_layout()
+
+    output_dir = Path("figures")
+    output_dir.mkdir(exist_ok=True)
+
+    fig.savefig(output_dir / f"{output_name}.pdf", bbox_inches="tight")
+    fig.savefig(output_dir / f"{output_name}.png", dpi=300, bbox_inches="tight")
+
+    plt.close(fig)
+Reglas finales obligatorias
+
+Aplicar estas reglas a todos los gráficos:
+
+Fondo blanco siempre.
+No usar dark_background.
+No usar títulos grandes dentro de la figura.
+Usar tipografía estilo paper.
+Mantener proporciones similares a publicaciones científicas.
+Exportar siempre en PDF y PNG 300 dpi.
+Usar colores sobrios.
+Diferenciar métodos por color y estilo de línea.
+Mantener etiquetas claras y formales.
+Evitar leyendas grandes o encima de datos.
+Usar tight_layout() y bbox_inches="tight".
+Guardar figuras en carpeta figures/.
+Las figuras deben verse bien impresas en blanco y negro.
+Cada figura debe poder insertarse directamente en un paper sin edición manual posterior.
+Objetivo visual esperado
+
+Las figuras finales deben parecer:
+
+paper IEEE
+ACM
+Springer
+Elsevier
+conferencias de networking/systems/algorithms
+
+y no gráficos tipo:
+
+notebook de debugging
+matplotlib default
+dashboard oscuro
+consola técnica
+
+El resultado debe verse limpio, minimalista, profesional y directamente publicable.
