@@ -46,6 +46,18 @@ Desde MATLAB:
 run('mo_sp_gateways/main/main_gateway_multigw_paper_replication.m')
 ```
 
+O desde el main central con `num_tests=100`:
+
+```matlab
+run('mo_sp_gateways/main/main_experiments_control.m')
+```
+
+## Nota Sobre El Modelo De Demanda Multi-Gateway
+El 2026-05-13 se corrigio el modelo para evaluar la demanda por gateway/cluster (no global entre todos los flujos). Cada gateway maneja solo los flujos de su cluster. La demanda global se reporta como el maximo entre todos los gateways. Esto es conceptualmente mas fiel al paper y reduce la escala de `W.C. Network demand` a valores mas cercanos a los esperados.
+
+## Nota Sobre `conflict_pair_mode`
+El modelo de conflicto usa `paper_double` heredado de NG-RES (cuenta cada par i,j con i!=j). Los papers de gateway no especifican su modelo, por lo que esta es una aproximacion documentada.
+
 ## Salidas Esperadas
 - `mo_sp_gateways/results_gateway_multigw_paper.mat`
 - `mo_sp_gateways/figures/gateway_multigw_sched_ratio.pdf`

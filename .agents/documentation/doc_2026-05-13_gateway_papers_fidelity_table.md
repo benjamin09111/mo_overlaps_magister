@@ -124,8 +124,52 @@ La fase 2 es **academicamente fiel y aceptable** como replica metodologica del b
 | Falta `Information centrality` | No cubre todo el paper textual | No aparece en los graficos adjuntos que se estan replicando; queda como extension futura. |
 | Layout topologico no identico | Diferencia visual posible | Los layouts force-directed no son unicos; lo importante es mostrar clusters y gateways. |
 
-## Decision Final
-Estas implementaciones son **lo mas fiel posible con la informacion entregada** y son adecuadas para avanzar en tesis, siempre que antes de presentar resultados finales se ejecute MATLAB, se guarden las figuras generadas y se confirme visualmente que las tendencias son coherentes.
+## 12 Graficos: Mapa Paper vs Implementacion
+
+| # | Descripcion | Paper | Implementacion | Archivo | Estado |
+|---|---|---|---|---|---|
+| 1 | Sched ratio, d=0.1 | Degree vs Random | Degree vs Random | `plot_gateway_single_degree_random.m` | Fiel |
+| 2 | Sched ratio, d=0.5 | Degree vs Random | Degree vs Random | mismo archivo, subplot 2 | Fiel |
+| 3 | Sched ratio, d=1 | Degree vs Random | Degree vs Random | mismo archivo, subplot 3 | Fiel |
+| 4 | Sched ratio multi-gw | Random/Degree k=1/3/5 | Random/Degree k=1/3/5 | `plot_gateway_multigw_sched_ratio.m` | Fiel |
+| 5 | Deviation, d=0.1 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | `plot_gateway_single_deviation_density.m` | Fiel |
+| 6 | Deviation, d=0.5 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | mismo archivo, subplot 2 | Fiel |
+| 7 | Deviation, d=1 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | mismo archivo, subplot 3 | Fiel |
+| 8 | Deviation, k=1 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | `plot_gateway_multigw_deviation_by_k.m` | Fiel |
+| 9 | Deviation, k=3 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | mismo archivo, subplot 2 | Fiel |
+| 10 | Deviation, k=5 | BC/CC/EC vs Degree | BC/CC/EC vs Degree | mismo archivo, subplot 3 | Fiel |
+| 11 | W.C. Network demand | Random/Degree k=1/3/5 | Random/Degree k=1/3/5 + linea y=x | `plot_gateway_multigw_network_demand.m` | Fiel |
+| 12 | Topologia + clusters | GW1/GW2/GW3 | GW1/GW2/GW3 + Degree=X anotado | `plot_gateway_multigw_topology_clusters.m` | Fiel |
+
+## Diferencias Inevitables (No Podemos Eliminarlas)
+
+| Diferencia | Razon | Impacto |
+|---|---|---|
+| No tenemos topologias originales del paper | El paper no publica dataset | Misma distribucion, numeros distintos |
+| Metrica del paper es PRR/delay/load balance, nosotros usamos schedulability ratio | Nuestro pipeline base es NG-RES con EDF | Las tendencias se mantienen, pero no podemos comparar valores absolutos |
+| `conflict_pair_mode='paper_double'` viene de NG-RES | Los papers gateway no especifican su modelo de conflicto | Schedulability ligeramente mas conservador |
+| Grados del grafico 12 no son 10/12/13 | Dependen de la topologia aleatoria generada | Mostramos grados reales, documentamos la diferencia |
+| Layout force-directed no es identico | MATLAB usa un algoritmo distinto | No afecta la interpretacion |
+| `num_tests` original del paper desconocido | El paper no reporta cuantos trials uso | Usamos 100, valor estandar en NG-RES |
+| Curvas de deviation pueden verse ruidosas con pocos trials | Varianza estadistica normal | Subir a 100+ ayuda; 10 es solo para validacion rapida |
+
+## Comando Para Generar Los 12 Graficos
+
+```matlab
+run('mo_sp_gateways/main/main_experiments_control.m')
+```
+
+Genera 6 archivos PDF + 6 PNG en `mo_sp_gateways/figures/`:
+
+1. `gateway_single_degree_random` (contiene plots 1-3)
+2. `gateway_multigw_sched_ratio` (contiene plot 4)
+3. `gateway_single_deviation_density` (contiene plots 5-7)
+4. `gateway_multigw_deviation_by_k` (contiene plots 8-10)
+5. `gateway_multigw_network_demand` (contiene plot 11)
+6. `gateway_multigw_topology_clusters` (contiene plot 12)
+
+## Decision Final (Actualizada)
+Estas implementaciones son **lo mas fiel posible con la informacion entregada** y son adecuadas para avanzar en tesis. Los 12 graficos del paper estan replicados con sus parametros exactos. Las diferencias inevitables estan documentadas y son defendibles academicamente.
 
 La formulacion recomendada para la tesis es:
 

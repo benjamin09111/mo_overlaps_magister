@@ -46,7 +46,7 @@ for d_idx = 1:num_densities
                 if strcmp(methods{method_idx}, 'random')
                     rng(cfg.random_gateway_rng_seed + 100000*d_idx + 1000*n_idx + t, 'twister');
                 end
-                gateways(method_idx) = select_gateway(G, methods{method_idx});
+                gateways(method_idx) = select_gateway_single_paper(G, methods{method_idx});
             end
 
             sensors = select_common_sensors_for_gateways(G, gateways, n);
@@ -131,4 +131,27 @@ for idx = 1:length(results.deviation_methods)
     dev_method_idx(idx) = method_idx;
 end
 results.deviation_method_idx = dev_method_idx;
+end
+
+function gateway = select_gateway_single_paper(G, method)
+method = lower(char(method));
+
+switch method
+    case 'betweenness'
+        scores = centrality(G, 'betweenness');
+    case 'degree'
+        scores = centrality(G, 'degree');
+    case 'eigenvector'
+        scores = centrality(G, 'eigenvector');
+    case 'closeness'
+        scores = centrality(G, 'closeness');
+    case 'random'
+        gateway = randi(numnodes(G));
+        return;
+    otherwise
+        error('Metodo de gateway no soportado en single-paper: %s', method);
+end
+
+scores(~isfinite(scores)) = -inf;
+[~, gateway] = max(scores);
 end

@@ -1,5 +1,6 @@
 function plot_gateway_mo_improvement(gw_results, cfg)
 % Deviation de MO sobre degree+SP y best-centrality+MO sobre degree+SP.
+% Para schedulability se usan puntos porcentuales, no porcentaje relativo.
 
 fig = figure('Color', 'w', 'Position', [120, 120, 650, 400]);
 colors = paper_colors();
@@ -7,11 +8,16 @@ x = gw_results.n_range;
 
 ax1 = subplot(1, 2, 1, 'Parent', fig);
 hold(ax1, 'on'); grid(ax1, 'on');
-setup_paper_axes(ax1, 'Number of flows, n', 'Deviation (%)');
+setup_paper_axes(ax1, 'Number of flows, n', 'Deviation (percentage points)');
 plot(ax1, [min(x), max(x)], [0, 0], ':', 'Color', [0.35 0.35 0.35], 'LineWidth', 1.0);
 
 for l_idx = 1:length(gw_results.lambdas)
-    y = squeeze(gw_results.dev_degree_mo_vs_sp.sched(1, l_idx, :));
+    if isfield(gw_results, 'dev_degree_mo_vs_sp_pp')
+        y = squeeze(gw_results.dev_degree_mo_vs_sp_pp.sched(1, l_idx, :));
+    else
+        baseline_idx = gw_results.baseline_idx;
+        y = 100 * squeeze(gw_results.ratio_sched_mo(baseline_idx, l_idx, :) - gw_results.ratio_sched_sp(baseline_idx, l_idx, :));
+    end
     plot(ax1, x, y, '-s', ...
         'Color', colors{l_idx}, 'LineWidth', 1.8, ...
         'MarkerFaceColor', 'white', 'MarkerSize', 4);
@@ -23,11 +29,17 @@ text(ax1, 0.05, 0.92, 'degree MO vs degree SP', ...
 
 ax2 = subplot(1, 2, 2, 'Parent', fig);
 hold(ax2, 'on'); grid(ax2, 'on');
-setup_paper_axes(ax2, 'Number of flows, n', 'Deviation (%)');
+setup_paper_axes(ax2, 'Number of flows, n', 'Deviation (percentage points)');
 plot(ax2, [min(x), max(x)], [0, 0], ':', 'Color', [0.35 0.35 0.35], 'LineWidth', 1.0);
 
 for l_idx = 1:length(gw_results.lambdas)
-    y = squeeze(gw_results.dev_best_mo_vs_baseline.sched(1, l_idx, :));
+    if isfield(gw_results, 'dev_best_mo_vs_baseline_pp')
+        y = squeeze(gw_results.dev_best_mo_vs_baseline_pp.sched(1, l_idx, :));
+    else
+        baseline_idx = gw_results.baseline_idx;
+        best_idx = gw_results.best_mo_gateway_idx;
+        y = 100 * squeeze(gw_results.ratio_sched_mo(best_idx, l_idx, :) - gw_results.ratio_sched_sp(baseline_idx, l_idx, :));
+    end
     plot(ax2, x, y, '-s', ...
         'Color', colors{l_idx}, 'LineWidth', 1.8, ...
         'MarkerFaceColor', 'white', 'MarkerSize', 4);

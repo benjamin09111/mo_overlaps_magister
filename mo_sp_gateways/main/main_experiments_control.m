@@ -3,6 +3,7 @@
 % Edita solo esta seccion superior para cambiar los experimentos.
 
 clear; clc; close all;
+clear functions;
 
 this_file = mfilename('fullpath');
 this_dir = fileparts(this_file);
@@ -44,15 +45,17 @@ conflict_pair_mode = 'paper_double';
 
 % Comparaciones a ejecutar
 run_routing_only = false;      % Solo routing SP vs MO, sin demand ni schedulability.
-run_sp_vs_mo = true;           % Réplica principal NG-RES: SP vs MO.
+run_sp_vs_mo = false;          % Réplica principal NG-RES: SP vs MO.
 run_mo_vs_aco = false;         % Extensión MO+ACO. Dejar en false si no se quiere ACO.
-run_schedulability = true;     % Calcula schedulability ratio y resultados EDF.
-run_gateway_comparison = true; % Compara métodos de selección de gateway.
-run_gateway_single_paper_replication = false; % Replica N=80 Degree/Random + Deviation de papers gateway.
+run_schedulability = false;    % Calcula schedulability ratio y resultados EDF.
+run_gateway_comparison = false; % Comparacion gateway legacy SP/MO. Mantener false para probar solo fases paper.
+run_gateway_single_paper_replication = true; % Replica N=80 Degree/Random + Deviation de papers gateway.
+run_gateway_multigw_paper_replication = true; % Replica multi-gateway N=75, k=1/3/5.
 run_plots = true;              % Activa generación de figuras.
-run_legacy_plots = true;       % Figuras clásicas: overlaps, hops, conflict, contention, sched.
+run_legacy_plots = true;       % Incluye plots gateway legacy; no corre NG-RES si flags anteriores estan en false.
 run_gateway_plots = true;      % Figuras nuevas de deviation para gateway.
 run_gateway_single_paper_plots = true; % Figuras Degree vs Random y Deviation N=80.
+run_gateway_multigw_paper_plots = true; % Figuras multi-gateway k=1/3/5.
 save_results = true;           % Guarda estructuras .mat con resultados.
 
 % Gateway comparison / deviation analysis
@@ -113,6 +116,7 @@ if show_summary
     fprintf('run_schedulability = %d\n', run_schedulability);
     fprintf('run_gateway_comparison = %d\n', run_gateway_comparison);
     fprintf('run_gateway_single_paper_replication = %d\n', run_gateway_single_paper_replication);
+    fprintf('run_gateway_multigw_paper_replication = %d\n', run_gateway_multigw_paper_replication);
     fprintf('run_plots = %d\n', run_plots);
     fprintf('run_legacy_plots = %d\n', run_legacy_plots);
     fprintf('gateway_methods = [%s]\n', strjoin(gateway_methods, ', '));
@@ -125,8 +129,9 @@ end
 %% ==============================
 
 dataset_path = fullfile(project_root, 'dataset_topologies.dat');
-needs_dataset_regen = regenerate_dataset || ~isfile(dataset_path);
-if cfg.use_topology_dataset && ~needs_dataset_regen
+needs_ngres_dataset = run_routing_only || run_sp_vs_mo || run_schedulability || run_mo_vs_aco || run_gateway_comparison;
+needs_dataset_regen = needs_ngres_dataset && (regenerate_dataset || ~isfile(dataset_path));
+if cfg.use_topology_dataset && needs_ngres_dataset && ~needs_dataset_regen
     try
         loaded_dataset = load(dataset_path, '-mat');
         if ~isfield(loaded_dataset, 'K') || ~isfield(loaded_dataset, 'N') || ~isfield(loaded_dataset, 'lambdas') || ...
@@ -138,7 +143,7 @@ if cfg.use_topology_dataset && ~needs_dataset_regen
     end
 end
 
-if cfg.use_topology_dataset && needs_dataset_regen
+if cfg.use_topology_dataset && needs_ngres_dataset && needs_dataset_regen
     fprintf('Generando dataset de topologias...\n');
     generate_topology_dataset(cfg);
     clear get_topology_from_dataset;
@@ -154,6 +159,7 @@ results_routing = struct();
 results_moaco = struct();
 gw_results = struct();
 gw_single_results = struct();
+gw_multigw_results = struct();
 
 if run_routing_only
     results_routing = run_experiment_suite_routing(cfg);
@@ -177,6 +183,7 @@ end
 
 if run_gateway_single_paper_replication
     cfg_gateway_single = config_gateway_single_paper();
+    cfg_gateway_single.num_tests = num_tests;
     dataset_single_path = fullfile(project_root, cfg_gateway_single.gateway_paper_dataset_name);
     needs_gateway_single_regen = ~isfile(dataset_single_path);
     if ~needs_gateway_single_regen
@@ -200,6 +207,34 @@ if run_gateway_single_paper_replication
     end
 
     gw_single_results = run_experiment_suite_gateway_single_paper(cfg_gateway_single);
+end
+
+if run_gateway_multigw_paper_replication
+    cfg_gateway_multigw = config_gateway_multigw_paper();
+    cfg_gateway_multigw.num_tests = num_tests;
+    dataset_multigw_path = fullfile(project_root, cfg_gateway_multigw.gateway_multigw_dataset_name);
+    needs_gateway_multigw_regen = ~isfile(dataset_multigw_path);
+    if ~needs_gateway_multigw_regen
+        try
+            loaded_gateway_multigw = load(dataset_multigw_path, '-mat');
+            if ~isfield(loaded_gateway_multigw, 'K') || ~isfield(loaded_gateway_multigw, 'N') || ~isfield(loaded_gateway_multigw, 'density') || ...
+                    loaded_gateway_multigw.K ~= cfg_gateway_multigw.num_tests || ...
+                    loaded_gateway_multigw.N ~= cfg_gateway_multigw.N || ...
+                    abs(loaded_gateway_multigw.density - cfg_gateway_multigw.gateway_multigw_density) > 1e-12
+                needs_gateway_multigw_regen = true;
+            end
+        catch
+            needs_gateway_multigw_regen = true;
+        end
+    end
+
+    if needs_gateway_multigw_regen
+        fprintf('Generando dataset gateway multi-gateway...\n');
+        generate_gateway_multigw_dataset(cfg_gateway_multigw);
+        clear get_gateway_multigw_topology;
+    end
+
+    gw_multigw_results = run_experiment_suite_gateway_multigw_paper(cfg_gateway_multigw);
 end
 
 %% ==============================
@@ -233,6 +268,13 @@ if run_plots && run_legacy_plots
         plot_gateway_single_degree_random(gw_single_results, cfg_gateway_single);
         plot_gateway_single_deviation_density(gw_single_results, cfg_gateway_single);
     end
+
+    if run_gateway_multigw_paper_replication && run_gateway_multigw_paper_plots && ~isempty(fieldnames(gw_multigw_results))
+        plot_gateway_multigw_sched_ratio(gw_multigw_results, cfg_gateway_multigw);
+        plot_gateway_multigw_network_demand(gw_multigw_results, cfg_gateway_multigw);
+        plot_gateway_multigw_topology_clusters(gw_multigw_results, cfg_gateway_multigw);
+        plot_gateway_multigw_deviation_by_k(gw_multigw_results, cfg_gateway_multigw);
+    end
 end
 
 %% ==============================
@@ -241,13 +283,19 @@ end
 
 if save_results
     out_path = fullfile(project_root, 'results_control.mat');
-    save(out_path, 'cfg', 'results', 'sched', 'results_routing', 'results_moaco', 'gw_results', 'gw_single_results');
+    save(out_path, 'cfg', 'results', 'sched', 'results_routing', 'results_moaco', 'gw_results', 'gw_single_results', 'gw_multigw_results');
     fprintf('Resultados guardados en %s\n', out_path);
 
     if run_gateway_single_paper_replication && ~isempty(fieldnames(gw_single_results))
         out_gateway_single = fullfile(project_root, 'results_gateway_single_paper.mat');
         save(out_gateway_single, 'cfg_gateway_single', 'gw_single_results');
         fprintf('Resultados gateway single-paper guardados en %s\n', out_gateway_single);
+    end
+
+    if run_gateway_multigw_paper_replication && ~isempty(fieldnames(gw_multigw_results))
+        out_gateway_multigw = fullfile(project_root, 'results_gateway_multigw_paper.mat');
+        save(out_gateway_multigw, 'cfg_gateway_multigw', 'gw_multigw_results');
+        fprintf('Resultados gateway multi-gateway guardados en %s\n', out_gateway_multigw);
     end
 end
 

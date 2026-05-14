@@ -158,10 +158,13 @@ gw_results.dev_vs_degree.conflict_sp = percent_dev(gw_results.mean_conflict_sp, 
 gw_results.dev_vs_degree.conflict_mo = percent_dev(gw_results.mean_conflict_mo, gw_results.mean_conflict_mo(baseline_idx, :, :));
 gw_results.dev_vs_degree.sched_sp = percent_dev(gw_results.ratio_sched_sp, gw_results.ratio_sched_sp(baseline_idx, :, :));
 gw_results.dev_vs_degree.sched_mo = percent_dev(gw_results.ratio_sched_mo, gw_results.ratio_sched_mo(baseline_idx, :, :));
+gw_results.dev_vs_degree_pp.sched_sp = point_dev(gw_results.ratio_sched_sp, gw_results.ratio_sched_sp(baseline_idx, :, :));
+gw_results.dev_vs_degree_pp.sched_mo = point_dev(gw_results.ratio_sched_mo, gw_results.ratio_sched_mo(baseline_idx, :, :));
 
 gw_results.dev_degree_mo_vs_sp.overlaps = percent_dev(gw_results.mean_overlaps_mo(baseline_idx, :, :), gw_results.mean_overlaps_sp(baseline_idx, :, :));
 gw_results.dev_degree_mo_vs_sp.conflict = percent_dev(gw_results.mean_conflict_mo(baseline_idx, :, :), gw_results.mean_conflict_sp(baseline_idx, :, :));
 gw_results.dev_degree_mo_vs_sp.sched = percent_dev(gw_results.ratio_sched_mo(baseline_idx, :, :), gw_results.ratio_sched_sp(baseline_idx, :, :));
+gw_results.dev_degree_mo_vs_sp_pp.sched = point_dev(gw_results.ratio_sched_mo(baseline_idx, :, :), gw_results.ratio_sched_sp(baseline_idx, :, :));
 
 mean_sched_mo = zeros(length(methods), 1);
 for idx = 1:length(methods)
@@ -176,6 +179,7 @@ gw_results.best_mo_gateway_method = methods{best_idx};
 gw_results.dev_best_mo_vs_baseline.overlaps = percent_dev(gw_results.mean_overlaps_mo(best_idx, :, :), gw_results.mean_overlaps_sp(baseline_idx, :, :));
 gw_results.dev_best_mo_vs_baseline.conflict = percent_dev(gw_results.mean_conflict_mo(best_idx, :, :), gw_results.mean_conflict_sp(baseline_idx, :, :));
 gw_results.dev_best_mo_vs_baseline.sched = percent_dev(gw_results.ratio_sched_mo(best_idx, :, :), gw_results.ratio_sched_sp(baseline_idx, :, :));
+gw_results.dev_best_mo_vs_baseline_pp.sched = point_dev(gw_results.ratio_sched_mo(best_idx, :, :), gw_results.ratio_sched_sp(baseline_idx, :, :));
 end
 
 function dev = percent_dev(values, baseline)
@@ -184,4 +188,9 @@ baseline_full = repmat(baseline, [size(values, 1), 1, 1]);
 valid = abs(baseline_full) > eps;
 dev(valid) = 100 * (values(valid) - baseline_full(valid)) ./ baseline_full(valid);
 dev(~valid) = 0;
+end
+
+function dev = point_dev(values, baseline)
+baseline_full = repmat(baseline, [size(values, 1), 1, 1]);
+dev = 100 * (values - baseline_full);
 end

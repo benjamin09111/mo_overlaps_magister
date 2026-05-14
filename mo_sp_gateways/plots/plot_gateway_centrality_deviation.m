@@ -1,5 +1,7 @@
 function plot_gateway_centrality_deviation(gw_results, cfg)
 % Deviation de schedulability ratio respecto de degree centrality.
+% Para schedulability se usan puntos porcentuales, no porcentaje relativo,
+% porque el baseline puede acercarse a cero y producir picos artificiales.
 
 fig = figure('Color', 'w', 'Position', [100, 100, 650, 400]);
 methods = gw_results.gateway_methods;
@@ -12,7 +14,7 @@ num_lambdas = length(gw_results.lambdas);
 for l_idx = 1:num_lambdas
     ax = subplot(1, num_lambdas, l_idx, 'Parent', fig);
     hold(ax, 'on'); grid(ax, 'on');
-    setup_paper_axes(ax, 'Number of flows, n', 'Deviation (%)');
+    setup_paper_axes(ax, 'Number of flows, n', 'Deviation (percentage points)');
 
     x = gw_results.n_range;
     plot(ax, [min(x), max(x)], [0, 0], ':', 'Color', [0.35 0.35 0.35], 'LineWidth', 1.0);
@@ -26,8 +28,13 @@ for l_idx = 1:num_lambdas
         c = colors{color_idx};
         color_idx = color_idx + 1;
 
-        y_sp = squeeze(gw_results.dev_vs_degree.sched_sp(method_idx, l_idx, :));
-        y_mo = squeeze(gw_results.dev_vs_degree.sched_mo(method_idx, l_idx, :));
+        if isfield(gw_results, 'dev_vs_degree_pp')
+            y_sp = squeeze(gw_results.dev_vs_degree_pp.sched_sp(method_idx, l_idx, :));
+            y_mo = squeeze(gw_results.dev_vs_degree_pp.sched_mo(method_idx, l_idx, :));
+        else
+            y_sp = 100 * squeeze(gw_results.ratio_sched_sp(method_idx, l_idx, :) - gw_results.ratio_sched_sp(baseline_idx, l_idx, :));
+            y_mo = 100 * squeeze(gw_results.ratio_sched_mo(method_idx, l_idx, :) - gw_results.ratio_sched_mo(baseline_idx, l_idx, :));
+        end
 
         plot(ax, x, y_sp, '--o', ...
             'Color', c, 'LineWidth', 1.5, ...

@@ -22,6 +22,7 @@ end
 
 [paths, assigned_gateways] = run_multigateway_shortest_path_routing(G, sensors, clusters, gateways);
 flows = build_flow_set(paths, cfg, T_common);
+flows.assigned_gateways = assigned_gateways(:);
 
 [sched_sp, sched_details] = compute_multigateway_schedulability_status(flows, gateways, cfg.gw_m_fixed, cfg.H);
 demand_curve = compute_multigateway_network_demand_curve(flows, gateways, cfg.gw_m_fixed, cfg.network_demand_time_grid);
