@@ -13,6 +13,10 @@ Esta carpeta contiene la documentación detallada de cada avance del proyecto.
 | Fecha | Documento | Descripción |
 |-------|-----------|-------------|
 | - | document.md | Documentación viva de decisiones de fidelidad (carpeta raíz) |
+| 2026-05-13 | doc_2026-05-13_gateway_single_paper_replication.md | Replica single-gateway N=80 Degree/Random + Deviation |
+| 2026-05-13 | doc_2026-05-13_gateway_multigw_replication.md | Replica multi-gateway N=75 k=1/3/5 |
+| 2026-05-13 | doc_2026-05-13_gateway_papers_fidelity_table.md | Tabla final paper vs implementación para fases 1 y 2 |
+| 2026-05-13 | pauta_tesis_udp.md | Pauta formal UDP para tesis, seminarios y memorias |
 
 ---
 

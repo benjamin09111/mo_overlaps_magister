@@ -1,0 +1,13 @@
+.agents: toda la informacion del agente utilizado, papers, informacion, documentación, skills, rules.
+
+mo_overlap_base: primer intento de réplica, simple y capta tendencias clave.
+
+better_moverlaps: mejora del código anterior para hacer una réplica más fiel, tocando puntos críticos como fórmulas o procedimientos específicos.
+
+mo_sp_final: fase 1; detalles ajustados y un main centralizado para ejecución, observar réplica fiel de mo vs sp.
+
+mo_sp_gateways: fase 2; se añaden comparaciones de selección de gateway, primer intento de réplicas fieles a nuevos papers de referencia:
+
+1. Implementamos una réplica modular y documentada del bloque single-gateway centrality paper, comparando Degree contra Random y midiendo deviation de Betweenness, Closeness y Eigenvector respecto de Degree bajo N=80, m=16 y densidades 0.1, 0.5, 1.
+
+2. Bloque multi-gateway k=1/3/5.
