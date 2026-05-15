@@ -5,9 +5,14 @@ function plot_gateway_multigw_network_demand(results, cfg)
 fig = figure('Color', 'w', 'Position', [120, 120, 680, 420]);
 ax = axes('Parent', fig);
 hold(ax, 'on'); grid(ax, 'on');
-setup_axes(ax, 't', 'W.C. Network demand');
+setup_axes(ax, 'Time (ms)', 'W.C. Network demand (ms)');
 
 x = results.time_grid;
+if isfield(results, 'network_demand_scale')
+    demand_scale = results.network_demand_scale;
+else
+    demand_scale = 1;
+end
 degree_idx = find(strcmp(results.gateway_methods, 'degree'), 1);
 random_idx = find(strcmp(results.gateway_methods, 'random'), 1);
 
@@ -15,15 +20,13 @@ degree_colors = {[0 0.447 0.741], [0.850 0.325 0.098], [0.929 0.694 0.125]};
 random_colors = {[0 0.447 0.741], [0.850 0.325 0.098], [0.929 0.694 0.125]};
 degree_styles = {'-', '-.', '--'};
 
-plot(ax, [min(x), max(x)], [min(x), max(x)], '-', 'Color', [0.3 0.3 0.3], 'LineWidth', 1.0, 'HandleVisibility', 'off');
-
 for k_idx = 1:length(results.k_gateways)
-    y_random = squeeze(results.mean_demand_curve(random_idx, k_idx, :));
+    y_random = demand_scale * squeeze(results.mean_demand_curve(random_idx, k_idx, :));
     stairs(ax, x, y_random, ':', 'Color', random_colors{k_idx}, 'LineWidth', 1.0);
 end
 
 for k_idx = 1:length(results.k_gateways)
-    y_degree = squeeze(results.mean_demand_curve(degree_idx, k_idx, :));
+    y_degree = demand_scale * squeeze(results.mean_demand_curve(degree_idx, k_idx, :));
     stairs(ax, x, y_degree, degree_styles{k_idx}, 'Color', degree_colors{k_idx}, 'LineWidth', 2.0);
 end
 

@@ -9,7 +9,7 @@ styles = method_styles();
 for d_idx = 1:length(results.densities)
     ax = subplot(1, length(results.densities), d_idx, 'Parent', fig);
     hold(ax, 'on'); grid(ax, 'on');
-    setup_paper_axes(ax, 'n', 'Deviation');
+    setup_paper_axes(ax, 'Number of flows', 'Deviation');
     plot(ax, [min(x), max(x)], [0, 0], ':', 'Color', [0.35 0.35 0.35], 'LineWidth', 0.8);
 
     legend_labels = cell(1, length(results.deviation_methods));

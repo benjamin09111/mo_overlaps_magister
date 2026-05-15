@@ -10,7 +10,7 @@ random_idx = find(strcmp(results.gateway_methods, 'random'), 1);
 for d_idx = 1:length(results.densities)
     ax = subplot(1, length(results.densities), d_idx, 'Parent', fig);
     hold(ax, 'on'); grid(ax, 'on');
-    setup_paper_axes(ax, 'n', 'Schedulability Ratio');
+    setup_paper_axes(ax, 'Number of flows', 'Schedulability Ratio');
 
     y_degree = squeeze(results.ratio_sched_sp(degree_idx, d_idx, :));
     y_random = squeeze(results.ratio_sched_sp(random_idx, d_idx, :));

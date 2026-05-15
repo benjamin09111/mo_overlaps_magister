@@ -15,6 +15,7 @@ fig = figure('Color', 'w', 'Position', [160, 160, 680, 420]);
 ax = axes('Parent', fig);
 p = plot(ax, G, 'Layout', 'force');
 p.NodeCData = clusters;
+p.NodeLabel = {};
 p.MarkerSize = 4;
 p.EdgeAlpha = 0.25;
 p.LineWidth = 0.6;
@@ -32,7 +33,8 @@ for idx = 1:length(gateways)
     y = p.YData(gw_node);
     plot(ax, x, y, 'p', 'MarkerSize', 15, 'MarkerFaceColor', color, ...
         'MarkerEdgeColor', 'k', 'LineWidth', 1.0);
-    text(ax, x, y + 0.08 * max(p.YData), sprintf('GW%d\nDegree=%d', idx, gw_degree), ...
+    y_offset = 0.08 * max(p.YData) - 0.08 * min(p.YData);
+    text(ax, x, y + y_offset, sprintf('GW%d\nDegree=%d', idx, gw_degree), ...
         'FontName', 'Times New Roman', 'FontSize', 10, 'FontWeight', 'bold', ...
         'Color', color, 'BackgroundColor', 'w', 'Margin', 1, ...
         'HorizontalAlignment', 'center');

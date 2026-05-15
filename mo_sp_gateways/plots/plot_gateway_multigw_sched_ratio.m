@@ -5,7 +5,7 @@ function plot_gateway_multigw_sched_ratio(results, cfg)
 fig = figure('Color', 'w', 'Position', [100, 100, 680, 420]);
 ax = axes('Parent', fig);
 hold(ax, 'on'); grid(ax, 'on');
-setup_axes(ax, 'n', 'Schedulability Ratio');
+setup_axes(ax, 'Number of flows (n)', 'Schedulability Ratio');
 
 x = results.n_range;
 degree_idx = find(strcmp(results.gateway_methods, 'degree'), 1);

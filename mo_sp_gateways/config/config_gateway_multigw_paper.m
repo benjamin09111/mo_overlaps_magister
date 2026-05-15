@@ -17,6 +17,7 @@ cfg.deviation_methods = {'betweenness', 'closeness', 'eigenvector'};
 
 cfg.network_demand_n = 25;
 cfg.network_demand_time_grid = 0:80:1280;
+cfg.network_demand_scale = 0.06;
 cfg.topology_plot_k = 3;
 cfg.topology_plot_method = 'degree';
 
@@ -27,7 +28,7 @@ cfg.eta_max = 7;
 cfg.period_values = 2.^(cfg.eta_min:cfg.eta_max);
 cfg.H = 128;
 cfg.use_implicit_deadlines = true;
-cfg.conflict_pair_mode = 'paper_double';
+cfg.conflict_pair_mode = 'unique';
 
 cfg.gateway_multigw_dataset_name = 'dataset_gateway_multigw_paper.dat';
 cfg.gateway_multigw_rng_seed = 3501;

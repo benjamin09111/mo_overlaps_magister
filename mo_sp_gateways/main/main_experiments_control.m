@@ -56,6 +56,7 @@ run_legacy_plots = true;       % Incluye plots gateway legacy; no corre NG-RES s
 run_gateway_plots = true;      % Figuras nuevas de deviation para gateway.
 run_gateway_single_paper_plots = true; % Figuras Degree vs Random y Deviation N=80.
 run_gateway_multigw_paper_plots = true; % Figuras multi-gateway k=1/3/5.
+run_gateway_individual_paper_plots = false; % Si es false, genera solo figuras combinadas tipo paper.
 save_results = true;           % Guarda estructuras .mat con resultados.
 
 % Gateway comparison / deviation analysis
@@ -265,15 +266,21 @@ if run_plots && run_legacy_plots
     end
 
     if run_gateway_single_paper_replication && run_gateway_single_paper_plots && ~isempty(fieldnames(gw_single_results))
-        plot_gateway_single_degree_random(gw_single_results, cfg_gateway_single);
-        plot_gateway_single_deviation_density(gw_single_results, cfg_gateway_single);
+        if run_gateway_individual_paper_plots
+            plot_gateway_single_degree_random(gw_single_results, cfg_gateway_single);
+            plot_gateway_single_deviation_density(gw_single_results, cfg_gateway_single);
+        end
+        plot_gateway_single_paper_combined(gw_single_results, cfg_gateway_single);
     end
 
     if run_gateway_multigw_paper_replication && run_gateway_multigw_paper_plots && ~isempty(fieldnames(gw_multigw_results))
-        plot_gateway_multigw_sched_ratio(gw_multigw_results, cfg_gateway_multigw);
-        plot_gateway_multigw_network_demand(gw_multigw_results, cfg_gateway_multigw);
-        plot_gateway_multigw_topology_clusters(gw_multigw_results, cfg_gateway_multigw);
-        plot_gateway_multigw_deviation_by_k(gw_multigw_results, cfg_gateway_multigw);
+        if run_gateway_individual_paper_plots
+            plot_gateway_multigw_sched_ratio(gw_multigw_results, cfg_gateway_multigw);
+            plot_gateway_multigw_network_demand(gw_multigw_results, cfg_gateway_multigw);
+            plot_gateway_multigw_topology_clusters(gw_multigw_results, cfg_gateway_multigw);
+            plot_gateway_multigw_deviation_by_k(gw_multigw_results, cfg_gateway_multigw);
+        end
+        plot_gateway_multigw_paper_combined(gw_multigw_results, cfg_gateway_multigw);
     end
 end
 

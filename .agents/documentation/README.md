@@ -18,6 +18,8 @@ Esta carpeta contiene la documentación detallada de cada avance del proyecto.
 | 2026-05-13 | doc_2026-05-13_gateway_papers_fidelity_table.md | Tabla final paper vs implementación para fases 1 y 2 |
 | 2026-05-13 | pauta_tesis_udp.md | Pauta formal UDP para tesis, seminarios y memorias |
 | 2026-05-13 | doc_2026-05-13_gateway_deviation_interpretation_fix.md | Corrección de interpretation de deviation en schedulability ratio |
+| 2026-05-13 | doc_2026-05-13_gateway_fidelity_calibration.md | Calibración de density, deviation, demand y topology para replicar los 12 gráficos gateway |
+| 2026-05-13 | doc_2026-05-13_gateway_nested_design.md | Diseño nested/paired para reducir ruido sin suavizar resultados |
 
 ---
 

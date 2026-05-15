@@ -9,7 +9,7 @@ styles = method_styles();
 for k_idx = 1:length(results.k_gateways)
     ax = subplot(1, length(results.k_gateways), k_idx, 'Parent', fig);
     hold(ax, 'on'); grid(ax, 'on');
-    setup_axes(ax, 'n', 'Deviation');
+    setup_axes(ax, 'Number of flows (n)', 'Deviation');
     plot(ax, [min(x), max(x)], [0, 0], ':', 'Color', [0.35 0.35 0.35], 'LineWidth', 0.8);
 
     legend_labels = cell(1, length(results.deviation_methods));

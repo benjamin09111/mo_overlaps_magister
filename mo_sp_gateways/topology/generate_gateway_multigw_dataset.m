@@ -14,7 +14,7 @@ topologies_data = cell(1, K);
 rng(cfg.gateway_multigw_rng_seed, 'twister');
 
 for k = 1:K
-    G = generate_random_topology(N, density);
+    G = generate_gateway_random_topology(N, density);
     s = struct();
     s.Graph = G;
     s.Density = density;
@@ -24,4 +24,29 @@ for k = 1:K
 end
 
 save(dataset_path, 'topologies_data', 'N', 'K', 'density', '-mat');
+end
+
+function G = generate_gateway_random_topology(N, p)
+% Generador local para evitar dependencias de path durante la replicacion.
+
+A = sprand(N, N, p);
+A = spones(A);
+A = triu(A, 1);
+A = A + A';
+G = graph(A);
+
+bins = conncomp(G);
+while max(bins) > 1
+    comp_ids = unique(bins);
+    main_comp_nodes = find(bins == comp_ids(1));
+
+    for c = 2:length(comp_ids)
+        disconnected_nodes = find(bins == comp_ids(c));
+        u = main_comp_nodes(randi(numel(main_comp_nodes)));
+        v = disconnected_nodes(randi(numel(disconnected_nodes)));
+        G = addedge(G, u, v, 1);
+    end
+
+    bins = conncomp(G);
+end
 end
